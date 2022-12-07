@@ -1,3 +1,3 @@
 # Run 
-### python app/routes.py to start group chat server
-### python test.py to test all the apis
+### To start group chat server: python app/routes.py
+### To test all the apis: python test.py
