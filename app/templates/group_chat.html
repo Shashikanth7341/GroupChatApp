@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<html lang="en">
+<body>
+<div class="nav__menu" id="nav-menu" style="float: right;">
+    <li class="nav__item"><a href="/groups" >Back To My Groups</a></li>
+    <li class="nav__item"><a href="/groups/{{ group._id }}/update" style="float: right;">Edit Group</a></li>
+    <li class="nav__item"><a href="/groups/{{ group._id }}/delete" style="float: right;">Delete Group</a></li>
+</div>
+<h1>{{ group.group_name }} Group</h1>
+
+<div id="messages">
+    {% for msg in group_messages %}
+    <div>
+        <b>{{msg.sender}}:&nbsp;[{{msg.created_at}}]:&nbsp;</b>{{msg.message}}
+    </div>
+    {% endfor %}
+</div>
+
+<form id="message_input_form">
+    <input type="text" id="message_input" placeholder="Enter your message here">
+    <button type="submit">Send</button>
+</form>
+
+<h3>Members</h3>
+<ul>
+    {% for member in group_members %}
+        <li>{{member._id.username}}</li>
+    {% endfor %}
+</ul>
+
+</body>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/2.3.0/socket.io.js"></script>
+<script>
+    const socket = io.connect("http://127.0.0.1:5000");
+
+    socket.on('connect', function () {
+        socket.emit('join_group', {
+            username: "{{ username }}",
+            group: "{{ group._id }}"
+        });
+
+        let message_input = document.getElementById('message_input');
+
+        document.getElementById('message_input_form').onsubmit = function (e) {
+            e.preventDefault();
+            let message = message_input.value.trim();
+            if (message.length) {
+                socket.emit('send_message', {
+                    username: "{{ username }}",
+                    group: "{{ group._id }}",
+                    message: message
+                })
+            }
+            message_input.value = '';
+            message_input.focus();
+        }
+    });
+
+    window.onbeforeunload = function () {
+        socket.emit('leave_group', {
+            username: "{{ username }}",
+            group: "{{ group._id }}"
+        })
+    };
+
+    socket.on('receive_message', function (data) {
+        console.log(data);
+        const newNode = document.createElement('div');
+        newNode.innerHTML = `<b>${data.username}&nbsp;[${data.created_at}]:&nbsp;</b> ${data.message}`;
+        document.getElementById('messages').appendChild(newNode);
+    });
+
+    socket.on('join_group_announcement', function (data) {
+        console.log(data);
+        if (data.username !== "{{ username }}") {
+            const newNode = document.createElement('div');
+            newNode.innerHTML = `<b>${data.username}</b> has joined the group`;
+            document.getElementById('messages').appendChild(newNode);
+        }
+    });
+
+    socket.on('leave_group_announcement', function (data) {
+        console.log(data);
+        const newNode = document.createElement('div');
+        newNode.innerHTML = `<b>${data.username}</b> has left the group`;
+        document.getElementById('messages').appendChild(newNode);
+    });
+</script>
+</html>

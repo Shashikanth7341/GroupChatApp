@@ -1,0 +1,19 @@
+<!DOCTYPE html>
+<html lang="en">
+<h1>Group Chat App</h1>
+<h2> Hi {{username}}</h2>
+<body>
+    <div class="nav__menu" id="nav-menu">
+        <li class="nav__item"><a href="/create-group" class="nav__link">Create Group</a></li>
+        <li class="nav__item"><a href="/users/{{ username }}" class="nav__link">Edit User</a></li>
+        <li class="nav__item"><a href="/logout/" class="nav__link">Logout</a></li>
+    </div>
+
+<h3>My Groups</h3>
+<ul>
+    {% for group in groups %}
+        <li><a href="/groups/{{ group._id.group_id }}">{{ group.group_name }}</a></li>
+    {% endfor %}
+</ul>
+</body>
+</html>
