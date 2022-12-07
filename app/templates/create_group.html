@@ -1,0 +1,22 @@
+<!DOCTYPE html>
+<html lang="en">
+<body>
+<h2>Hi {{username}}</h2>
+<div class="nav__menu" id="nav-menu">
+    <ul class="nav__list">
+        <li class="nav__item"><a href="/groups" class="nav__link">My Groups</a></li>
+    </ul>
+</div>
+<h2>Create Group</h2>
+<h3>{{ message }}</h3>
+<form method="post">
+    <label>Group Name:</label>
+    <input type="text" name="group_name">
+    <br>
+    <label>Members:</label>
+    <input type="text" name="members">
+    <br>
+    <button type="submit">Create</button>
+</form>
+</body>
+</html>
