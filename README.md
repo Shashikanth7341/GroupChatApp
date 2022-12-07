@@ -1,2 +1,3 @@
 # Run 
-python test.py to test all the apis
+# python test.py 
+to test all the apis
